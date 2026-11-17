@@ -132,8 +132,8 @@ input[type=time] { border: 1px solid var(--line); border-radius: 0; background: 
 .seg button + button { border-left: 1px solid var(--ink); }
 .seg button.on { background: var(--ink); color: #fff; }
 .intro { padding: 22px 0 18px; }
-.intro .hello { font-size: 13px; }
-.intro .who { font-size: 18px; font-weight: 800; color: var(--ink); margin-right: 1px; }
+.hello { font-size: 13px; }
+.hello .who { font-size: 18px; font-weight: 800; color: var(--ink); margin-right: 1px; }
 .intro h1 { font-size: 22px; margin-top: 2px; }
 .intro p { margin: 10px 0 0; color: var(--sub); font-size: 13px; line-height: 1.75; white-space: pre-line; }
 .plist { border-top: 1px solid var(--ink); }
@@ -428,7 +428,7 @@ function renderRecord() {
     S.justAdded ? doneBox() : h('section', { class: 'hero' },
       h('div', { class: 'sub hello' }, h('b', { class: 'who', text: d.name }), 'さん、お疲れ様です！'),
       h('h1', { text: '配信した時間を記録' }),
-      h('p', { class: 'sub', style: 'margin:6px 0 0', text: '配信が終わったら、始めた時間と終わった時間を入れてください。' })),
+      h('p', { class: 'sub', style: 'margin:8px 0 0;line-height:1.75;white-space:pre-line', text: '配信が終わったら、\n始めた時間と終わった時間を入れてください。' })),
     form,
     recentList(),
     h('div', { class: 'foot' })
