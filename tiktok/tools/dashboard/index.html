@@ -161,6 +161,40 @@ textarea { min-height: 84px; resize: vertical; }
 .legend i { display: inline-block; width: 14px; height: 8px; background: var(--ink); margin-right: 5px; vertical-align: 0; }
 .legend i.self { background: #fff; border: 1.5px solid var(--ink); }
 .foot { height: 48px; }
+.pv { padding: 18px 0 16px; border-bottom: 1px solid var(--line); }
+.pv-name { font-size: 15px; font-weight: 800; letter-spacing: -0.01em; }
+.meter { display: grid; grid-template-columns: 30px 1fr 52px; align-items: center; gap: 2px 8px; margin: 8px 0 12px; font-size: 11px; color: var(--sub); }
+.meter .bar { height: 8px; position: relative; background: var(--soft); }
+.meter .bar i { position: absolute; left: 0; top: 0; bottom: 0; }
+.meter .bar i.p { border: 1.5px solid var(--ink); background: #fff; }
+.meter .bar i.a { background: var(--ink); }
+.meter b { font-size: 13px; color: var(--ink); font-weight: 800; text-align: right; white-space: nowrap; }
+.tlx { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.tl { min-width: 300px; }
+.tl-axis, .tl-day { display: grid; grid-template-columns: 52px 1fr; align-items: center; }
+.tl-axis .ticks { position: relative; height: 16px; }
+.tl-axis .ticks span { position: absolute; transform: translateX(-50%); font-size: 10px; color: var(--faint); }
+.tl-day { min-height: 30px; border-top: 1px solid var(--line); }
+.tl-day:last-child { border-bottom: 1px solid var(--line); }
+.tl-day .dl { font-size: 12px; font-weight: 700; line-height: 1.15; padding: 4px 0; }
+.tl-day .dl small { display: block; font-size: 10px; font-weight: 700; color: var(--faint); }
+.tl-day .dl small.extra { color: var(--sat); }
+.tl-day .dl small.miss { color: var(--ng-ink); }
+.tl-day .dl small.ok { color: var(--sub); }
+.tl-day.sat .dl > span { color: var(--sat); }
+.tl-day.sun .dl > span { color: var(--sun); }
+.tl-day.today .dl > span { box-shadow: inset 0 -2px 0 var(--accent); }
+.tl-day.future .tr { background-color: #fafaf8; }
+.tr { position: relative; height: 30px; background: repeating-linear-gradient(90deg, transparent 0, transparent calc(var(--hw) * 3 - 1px), var(--line) calc(var(--hw) * 3 - 1px), var(--line) calc(var(--hw) * 3)); }
+.tr .p { position: absolute; top: 7px; bottom: 7px; border: 1.5px solid var(--ink); background: #fff; }
+.tr .a { position: absolute; top: 11px; bottom: 11px; background: var(--ink); }
+.tr .a.out { background: var(--sat); }
+.pv-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 11px; color: var(--sub); margin: 14px 0 0; }
+.pv-legend i { display: inline-block; width: 18px; height: 10px; margin-right: 6px; vertical-align: -1px; }
+.pv-legend i.p { border: 1.5px solid var(--ink); }
+.pv-legend i.a { background: var(--ink); height: 6px; vertical-align: 1px; }
+.pv-legend i.o { background: var(--sat); height: 6px; vertical-align: 1px; }
+.pv-none { font-size: 12px; color: var(--sub); padding: 14px 0; line-height: 1.8; }
 </style>
 </head>
 <body>
@@ -288,7 +322,7 @@ function copyText(text) {
 </script>
 
 <script>
-var S = { data: null, week: '', tab: window.__TAB || ({ '#calc': 'calc', '#livers': 'livers', '#manage': 'manage' })[location.hash] || 'day', day: 0, open: {}, editing: null, busy: false };
+var S = { data: null, week: '', tab: window.__TAB || ({ '#plan': 'plan', '#calc': 'calc', '#livers': 'livers', '#manage': 'manage' })[location.hash] || 'day', day: 0, open: {}, editing: null, busy: false };
 var app = document.getElementById('app');
 
 function activeLivers() { return S.data.livers.filter(function (l) { return l.active; }); }
@@ -331,23 +365,27 @@ function render() {
   var live = withStreams();
   var all = [].concat.apply([], live.map(function (l) { return l.streams; }));
   var isThisWeek = d.week === d.thisWeek;
-  var tabs = [['day', '日別'], ['livers', 'ライバー'], ['calc', '計算機'], ['manage', '管理']];
+  // The plan tab may look one week ahead (plans already registered for next week).
+  var lastWeek = S.tab === 'plan' ? addDays(d.thisWeek, 7) : d.thisWeek;
+  var atEnd = d.week >= lastWeek;
+  var tabs = [['day', '日別'], ['plan', '予定と実績'], ['livers', 'ライバー'], ['calc', '計算機'], ['manage', '管理']];
   var tabBar = h('nav', { class: 'tabs', role: 'tablist' }, h('div', { class: 'wrap' }, tabs.map(function (t) {
     return h('button', { type: 'button', role: 'tab', 'aria-selected': S.tab === t[0] ? 'true' : 'false', class: S.tab === t[0] ? 'on' : '', text: t[1],
       onclick: function () { S.tab = t[0]; render(); window.scrollTo(0, 0); } });
   })));
-  var week = S.tab === 'day' || S.tab === 'livers' ? [
+  if (S.tab !== 'plan' && d.week > d.thisWeek) { load(d.thisWeek); return; }
+  var week = S.tab === 'day' || S.tab === 'livers' || S.tab === 'plan' ? [
     h('div', { class: 'weeknav' },
       h('div', { class: 'label' }, h('span', { class: 'sub', text: weekRel(d.week) }), h('b', { text: weekLabel(d.dates) })),
       h('div', { class: 'nav' },
         h('button', { type: 'button', 'aria-label': '前の週', text: '‹', onclick: function () { load(addDays(S.week, -7)); } }),
-        h('button', { type: 'button', 'aria-label': '次の週', text: '›', disabled: isThisWeek, onclick: function () { if (!isThisWeek) load(addDays(S.week, 7)); } }))),
-    h('div', { class: 'kpis' },
+        h('button', { type: 'button', 'aria-label': '次の週', text: '›', disabled: atEnd, onclick: function () { if (!atEnd) load(addDays(S.week, 7)); } }))),
+    S.tab === 'plan' ? planKpis() : h('div', { class: 'kpis' },
       h('div', { class: 'kpi' }, h('div', { class: 'k', text: '配信した人' }), h('div', { class: 'v' }, String(live.length), h('small', { text: '/ ' + activeLivers().length + '人' }))),
       h('div', { class: 'kpi' }, h('div', { class: 'k', text: '配信時間' }), h('div', { class: 'v' }, shortHours(sumMinutes(all)).replace('h', ''), h('small', { text: '時間・' + all.length + '回' }))),
       h('div', { class: 'kpi k3' }, h('div', { class: 'k', text: 'ダイヤ' }), h('div', { class: 'v', text: shortNum(dia(all)) })))
   ] : null;
-  var body = S.tab === 'day' ? renderDayTab() : S.tab === 'livers' ? renderLiversTab() : S.tab === 'calc' ? renderCalcTab() : renderManageTab();
+  var body = S.tab === 'day' ? renderDayTab() : S.tab === 'plan' ? renderPlanTab() : S.tab === 'livers' ? renderLiversTab() : S.tab === 'calc' ? renderCalcTab() : renderManageTab();
   var root = h('div', null, tabBar, h('div', { class: 'wrap' }, week, body, h('div', { class: 'foot' })));
   app.replaceChildren(root);
 }
@@ -411,9 +449,85 @@ function renderDayTab() {
     memos.map(function (x) { return h('div', { class: 'detail', style: 'border:none;margin:0;padding:4px 0' }, h('div', null, h('span', { text: x[0] }), h('span', { text: x[1] }))); })) : null];
 }
 
+/* ---- plan vs actual tab ---- */
+// Actual = sessions imported from TikTok LIVE Backstage. A plan is only a plan, so the
+// wording stays neutral. Each liver gets a week timeline: one row per day, the plan as an
+// outlined bar and the actual stream as a filled bar on the same time axis.
+function actualOn(l, date) { return l.streams.filter(function (r) { return r.date === date && r.source === 'backstage'; }); }
+function planOn(l, date) { return (l.plans || []).filter(function (p) { return p.date === date; }); }
+function overlap(a, b) { return a.s < b.e && b.s < a.e; }
+function planStatus(date, plans, acts) {
+  if (plans.length && acts.length) return plans.some(function (p) { return acts.some(function (a) { return overlap(p, a); }); })
+    ? ['ok', '予定どおり'] : ['extra', '時間ずれ'];
+  if (acts.length) return ['extra', '予定外'];
+  if (plans.length) return date < S.data.today ? ['miss', '配信なし'] : ['', 'これから'];
+  return null;
+}
+function actualMinutes(l) { return S.data.dates.reduce(function (a, dt) { return a + sumMinutes(actualOn(l, dt)); }, 0); }
+function planKpis() {
+  var people = 0, plan = 0, act = 0;
+  activeLivers().forEach(function (l) {
+    if ((l.plans || []).length) people++;
+    plan += sumMinutes(l.plans || []); act += actualMinutes(l);
+  });
+  return h('div', { class: 'kpis' },
+    h('div', { class: 'kpi' }, h('div', { class: 'k', text: '予定を入れた人' }), h('div', { class: 'v' }, String(people), h('small', { text: '/ ' + activeLivers().length + '人' }))),
+    h('div', { class: 'kpi' }, h('div', { class: 'k', text: '予定' }), h('div', { class: 'v' }, shortHours(plan).replace('h', ''), h('small', { text: '時間' }))),
+    h('div', { class: 'kpi k3' }, h('div', { class: 'k', text: '実績' }), h('div', { class: 'v' }, shortHours(act).replace('h', ''), h('small', { text: '時間' }))));
+}
+function renderPlanTab() {
+  var d = S.data;
+  var rows = [], none = [];
+  activeLivers().forEach(function (l) {
+    var plan = sumMinutes(l.plans || []), act = actualMinutes(l);
+    if (plan || act) rows.push({ l: l, plan: plan, act: act }); else none.push(l.name);
+  });
+  if (!rows.length) return [h('div', { class: 'card empty', style: 'margin-top:16px', text: 'この週は予定も配信もまだありません。' })];
+  rows.sort(function (a, b) { return Math.max(b.plan, b.act) - Math.max(a.plan, a.act); });
+  // One time axis for the whole week: 12:00 to 05:00 the next day, widened if needed.
+  var lo = 12 * 60, hi = 29 * 60;
+  rows.forEach(function (x) {
+    (x.l.plans || []).concat(x.l.streams.filter(function (r) { return r.source === 'backstage'; })).forEach(function (r) {
+      lo = Math.min(lo, Math.floor(r.s / 180) * 180); hi = Math.max(hi, Math.ceil(r.e / 60) * 60);
+    });
+  });
+  var span = hi - lo;
+  var pct = function (m) { return ((m - lo) / span * 100) + '%'; };
+  var box = function (cls, r) { return h('i', { class: cls, title: hm(r.s) + '〜' + hm(r.e), style: 'left:' + pct(r.s) + ';width:calc(' + pct(r.e) + ' - ' + pct(r.s) + ')' }); };
+  var ticks = h('div', { class: 'ticks' });
+  for (var t = Math.ceil(lo / 180) * 180; t <= hi; t += 180) ticks.appendChild(h('span', { style: 'left:' + pct(t), text: String(t / 60 % 24) }));
+  var maxH = Math.max.apply(null, rows.map(function (x) { return Math.max(x.plan, x.act); }));
+  var hw = 'calc(' + (60 / span * 100) + '%)';
+  return [
+    h('div', { class: 'pv-legend' },
+      h('span', null, h('i', { class: 'p' }), '予定'),
+      h('span', null, h('i', { class: 'a' }), '配信（予定の時間内）'),
+      h('span', null, h('i', { class: 'o' }), '配信（予定の外）')),
+    h('p', { class: 'sub', style: 'margin:8px 0 0', text: '配信は TikTok LIVE Backstage の記録です。毎晩更新します。' }),
+    h('div', { class: 'list', style: 'margin-top:10px' }, rows.map(function (x) {
+      return h('div', { class: 'pv' },
+        h('div', { class: 'pv-name', text: x.l.name }),
+        h('div', { class: 'meter' },
+          h('span', { text: '予定' }), h('div', { class: 'bar' }, x.plan ? h('i', { class: 'p', style: 'width:' + (x.plan / maxH * 100) + '%' }) : null), h('b', { text: x.plan ? shortHours(x.plan) : '-' }),
+          h('span', { text: '配信' }), h('div', { class: 'bar' }, x.act ? h('i', { class: 'a', style: 'width:' + (x.act / maxH * 100) + '%' }) : null), h('b', { text: x.act ? shortHours(x.act) : '-' })),
+        h('div', { class: 'tlx' }, h('div', { class: 'tl' },
+          h('div', { class: 'tl-axis' }, h('span'), ticks.cloneNode(true)),
+          d.dates.map(function (dt, i) {
+            var ps = planOn(x.l, dt), as = actualOn(x.l, dt), st = planStatus(dt, ps, as);
+            return h('div', { class: 'tl-day' + (i === 5 ? ' sat' : i === 6 ? ' sun' : '') + (dt === d.today ? ' today' : '') + (dt > d.today ? ' future' : '') },
+              h('div', { class: 'dl' }, h('span', { text: md(dt) + ' ' + DAY_JA[i] }), st ? h('small', { class: st[0], text: st[1] }) : null),
+              h('div', { class: 'tr', style: '--hw:' + hw },
+                ps.map(function (p) { return box('p', p); }),
+                as.map(function (a) { return box(ps.some(function (p) { return overlap(p, a); }) ? 'a' : 'a out', a); })));
+          }))));
+    })),
+    none.length ? h('div', { class: 'pv-none' }, h('b', { style: 'color:var(--ink)', text: '予定も配信もない人　' }), none.join('、')) : null
+  ];
+}
+
 /* ---- livers tab ---- */
 function lineMessage(l) {
-  return l.name + 'さん、お疲れさまです！NEXTAです。\n配信が終わったら、こちらから配信した時間を記録してください。このリンクはずっと使えます。\n' + l.link;
+  return l.name + 'さん、お疲れさまです！NEXTAです。\n配信できそうな日と時間を、こちらから入れてください。予定なので、あとから変えても大丈夫です。リンクはずっと使えます。\n' + l.link;
 }
 function renderLiversTab() {
   var act = activeLivers();
