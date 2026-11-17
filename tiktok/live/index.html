@@ -105,6 +105,11 @@ textarea { min-height: 84px; resize: vertical; }
 .times { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 10px; }
 .times .tilde { padding-bottom: 12px; color: var(--sub); }
 .times .t label { display: block; font-size: 12px; color: var(--sub); margin-bottom: 4px; font-weight: 700; white-space: nowrap; }
+.tsel { display: flex; align-items: center; gap: 4px; border: 1px solid var(--line); background: #fff; min-height: 50px; padding: 0 8px; }
+.tsel select { flex: 1; min-width: 0; border: none; background: transparent; font: inherit; font-size: 20px; font-weight: 800; color: var(--ink); text-align: center; text-align-last: center; -webkit-appearance: none; appearance: none; padding: 8px 0; }
+.tsel span { font-size: 20px; font-weight: 800; }
+.pday-edit .tsel { min-height: 44px; }
+.pday-edit .tsel select, .pday-edit .tsel span { font-size: 17px; }
 input[type=time] { border: 1px solid var(--line); border-radius: 0; background: #fff; padding: 10px 12px; font-size: 20px; font-weight: 800; width: 100%; min-height: 50px; -webkit-appearance: none; appearance: none; text-align: center; }
 .next { display: inline-block; margin-left: 4px; font-size: 11px; font-weight: 700; color: #fff; background: var(--sat); border-radius: 0; padding: 0 7px; vertical-align: 1px; }
 .dur { margin-top: 12px; text-align: center; font-size: 14px; color: var(--sub); }
@@ -287,9 +292,22 @@ function dateChips() {
   return h('div', { class: 'dates' }, out);
 }
 
+// Two selects instead of <input type=time>: the native picker follows the
+// phone's language (e.g. Korean 오후), so this keeps 24h Japanese everywhere.
 function timeInput(id, value, onset) {
-  return h('input', { id: id, type: 'time', value: toHHMM(value), required: true,
-    onchange: function (e) { var m = fromHHMM(e.target.value); if (!isNaN(m)) { onset(m); render(); } } });
+  var v = ((value % 1440) + 1440) % 1440, hh = Math.floor(v / 60), mm = v % 60;
+  function sel(n, cur, fmt, label) {
+    var el = h('select', { 'aria-label': label });
+    for (var i = 0; i < n; i++) el.appendChild(h('option', { value: String(i), text: fmt(i) }));
+    el.value = String(cur);
+    return el;
+  }
+  var H = sel(24, hh, function (i) { return pad2(i); }, '時');
+  var M = sel(60, mm, function (i) { return pad2(i); }, '分');
+  H.id = id;
+  function upd() { onset(Number(H.value) * 60 + Number(M.value)); render(); }
+  H.onchange = upd; M.onchange = upd;
+  return h('div', { class: 'tsel' }, H, h('span', { text: ':' }), M);
 }
 
 function render() {
