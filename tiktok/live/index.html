@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<base target="_top">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>NEXTA 配信予定</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;800&display=swap');
+:root {
+  /* NEXTA site world (same as nexta.ltd and the calculator): white, ink, thin lines, one red. */
+  --ink: #242625; --sub: #606461; --faint: #8f918d; --line: #deded9;
+  --bg: #fff; --card: #fff; --gray: #f4f4f2; --soft: #f4f4f2;
+  --accent: #d63c2d; --focus: #ad3025;
+  --emerald: #242625; --skyc: #f4f4f2; --pinkc: #d63c2d;
+  --sage: #f4f4f2; --rose: #fbeae7; --sky: #f4f4f2;
+  --ok-ink: #242625; --ng-ink: #ad3025; --sat: #2f5d86; --sun: #d63c2d;
+  --line-green: #06c755;
+  --radius: 0px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); color-scheme: light; }
+body {
+  font-family: 'Manrope', 'Noto Sans JP', sans-serif;
+  color: var(--ink); font-size: 14px; line-height: 1.7; font-weight: 500;
+  letter-spacing: 0; font-variant-numeric: tabular-nums; line-break: strict; -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
+button, input, select, textarea { font: inherit; color: inherit; letter-spacing: inherit; }
+button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+::selection { background: #f6b2a9; color: var(--ink); }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.wrap { max-width: 560px; margin: 0 auto; padding: 0 16px; }
+.topbar { position: sticky; top: 0; z-index: 10; background: #fff; border-bottom: 1px solid var(--line); }
+.topbar .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+.lockup { display: inline-flex; flex-direction: column; align-items: center; }
+.logo { display: block; width: 74px; height: auto; }
+.tagline { display: block; margin-top: 1px; font-family: Arial, sans-serif; font-size: 5px; letter-spacing: .045em; white-space: nowrap; color: #142e38; }
+.top-title { font-size: 13px; font-weight: 700; color: var(--ink); }
+h1, h2 { font-family: 'Noto Sans JP', sans-serif; letter-spacing: -0.02em; margin: 0; }
+h1 { font-size: 24px; font-weight: 800; line-height: 1.5; }
+h2 { font-size: 16px; font-weight: 700; }
+.sub { color: var(--sub); font-size: 12px; }
+.card { background: var(--card); border: 1px solid var(--line); padding: 18px; }
+.stack > * + * { margin-top: 12px; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: 44px; padding: 0 16px; border-radius: 0; border: 1px solid var(--ink);
+  background: #fff; font-size: 13px; font-weight: 700; white-space: nowrap; text-decoration: none; transition: background .15s, color .15s;
+}
+.btn:hover { background: var(--soft); }
+a.btn { color: var(--ink); }
+.btn:active { background: var(--gray); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.primary:hover, .btn.primary:active { background: var(--focus); border-color: var(--focus); }
+.btn.line { background: var(--line-green); border-color: var(--line-green); color: #fff; }
+.btn.line:active { background: #05a648; }
+.btn.primary[disabled] { background: var(--faint); border-color: var(--faint); }
+.btn.small { height: 36px; padding: 0 12px; font-size: 12px; }
+.btn.ghost { border-color: transparent; background: transparent; color: var(--sub); }
+.pill { display: inline-block; padding: 1px 8px; border: 1px solid currentColor; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.pill.ok { background: var(--sage); color: var(--ok-ink); }
+.pill.ng { background: var(--rose); color: var(--ng-ink); }
+.pill.off { background: var(--gray); color: var(--sub); }
+select, input[type=text], input[type=password], textarea {
+  border: 1px solid var(--line); border-radius: 0; background: #fff; padding: 10px 12px; font-size: 16px; width: 100%; min-height: 48px;
+}
+select { -webkit-appearance: none; appearance: none; padding-right: 26px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--sub) 50%), linear-gradient(135deg, var(--sub) 50%, transparent 50%);
+  background-position: calc(100% - 14px) 52%, calc(100% - 9px) 52%; background-size: 5px 5px; background-repeat: no-repeat; }
+textarea { min-height: 84px; resize: vertical; }
+.switch { position: relative; width: 51px; height: 31px; flex: none; }
+.switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; z-index: 1; }
+.switch span { position: absolute; inset: 0; background: #d9dad6; border-radius: 999px; transition: background .2s; }
+.switch span::after { content: ""; position: absolute; top: 2px; left: 2px; width: 27px; height: 27px; border-radius: 50%; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,.18); transition: transform .2s; }
+.switch input:checked + span { background: var(--accent); }
+.switch input:checked + span::after { transform: translateX(20px); }
+.notice { border: 1px solid var(--accent); color: var(--focus); padding: 12px 14px; font-size: 13px; }
+.hint { background: var(--soft); color: var(--ink); padding: 12px 14px; font-size: 13px; }
+.center { text-align: center; }
+.muted { color: var(--sub); }
+.loading { padding: 80px 0; text-align: center; color: var(--sub); font-size: 14px; }
+.toast {
+  position: fixed; left: 50%; bottom: 96px; transform: translateX(-50%); z-index: 50;
+  background: var(--ink); color: #fff; padding: 10px 16px; font-size: 13px; font-weight: 700;
+  opacity: 0; transition: opacity .2s; pointer-events: none; white-space: nowrap;
+}
+.toast.show { opacity: 1; }
+</style>
+<style>
+.hero { margin: 16px 0 12px; padding: 18px 16px 16px; border-radius: var(--radius); background: var(--soft); }
+.hero h1 { margin-top: 2px; font-size: 22px; }
+.field { margin-top: 16px; }
+.field > label, .field > .label { display: block; font-size: 13px; font-weight: 700; color: var(--sub); margin-bottom: 8px; }
+.dates { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; -webkit-overflow-scrolling: touch; }
+.dates button { flex: none; min-width: 58px; border: 1px solid rgba(20,46,56,.08); background: var(--card); border-radius: 0; padding: 6px 8px; line-height: 1.25; }
+.dates button .w { display: block; font-size: 11px; font-weight: 700; color: var(--sub); }
+.dates button .n { display: block; font-size: 15px; font-weight: 800; }
+.dates button.sat .w { color: var(--sat); }
+.dates button.sun .w { color: var(--sun); }
+.dates button.on { background: var(--ink); border-color: var(--ink); color: #fff; }
+.dates button.on .w { color: rgba(255,255,255,.75); }
+.times { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 10px; }
+.times .tilde { padding-bottom: 12px; color: var(--sub); }
+.times .t label { display: block; font-size: 12px; color: var(--sub); margin-bottom: 4px; font-weight: 700; white-space: nowrap; }
+input[type=time] { border: 1px solid var(--line); border-radius: 0; background: #fff; padding: 10px 12px; font-size: 20px; font-weight: 800; width: 100%; min-height: 50px; -webkit-appearance: none; appearance: none; text-align: center; }
+.next { display: inline-block; margin-left: 4px; font-size: 11px; font-weight: 700; color: #fff; background: var(--sat); border-radius: 0; padding: 0 7px; vertical-align: 1px; }
+.dur { margin-top: 12px; text-align: center; font-size: 14px; color: var(--sub); }
+.dur b { font-size: 20px; color: var(--accent); font-weight: 800; margin-left: 6px; }
+.send { width: 100%; height: 52px; font-size: 17px; margin-top: 16px; }
+.done { text-align: center; }
+.check { width: 56px; height: 56px; border-radius: 0; background: var(--soft); border: 1px solid var(--ink); display: flex; align-items: center; justify-content: center; margin: 4px auto 10px; }
+.rec { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-top: 1px solid var(--line); }
+.rec:first-child { border-top: none; }
+.rec .d { width: 70px; white-space: nowrap; flex: none; font-weight: 700; font-size: 14px; }
+.rec .d.sat { color: var(--sat); }
+.rec .d.sun { color: var(--sun); }
+.rec .t { flex: 1; font-size: 14px; line-height: 1.4; }
+.rec .t small { display: block; color: var(--sub); font-size: 12px; }
+.rec.new { background: var(--sage); margin: 0 -16px; padding-left: 16px; padding-right: 16px; }
+.rec .del { flex: none; border: none; background: transparent; color: var(--ng-ink); font-size: 13px; font-weight: 700; padding: 6px 4px; }
+.foot { height: 40px; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--ink); margin-top: 16px; }
+.seg button { border: none; background: #fff; height: 40px; font-size: 13px; font-weight: 700; color: var(--ink); transition: background .15s, color .15s; }
+.seg button + button { border-left: 1px solid var(--ink); }
+.seg button.on { background: var(--ink); color: #fff; }
+.intro { padding: 22px 0 18px; }
+.intro h1 { font-size: 22px; margin-top: 2px; }
+.intro p { margin: 8px 0 0; color: var(--sub); font-size: 13px; }
+.plist { border-top: 1px solid var(--ink); }
+.pday { border-bottom: 1px solid var(--line); }
+.pday-top { display: flex; align-items: center; gap: 12px; width: 100%; border: none; background: none; padding: 13px 0; text-align: left; min-height: 56px; }
+.pday-top .d { width: 64px; flex: none; line-height: 1.3; }
+.pday-top .d b { display: block; font-size: 16px; font-weight: 800; }
+.pday-top .d span { font-size: 11px; font-weight: 700; color: var(--sub); }
+.pday.sat .d span { color: var(--sat); }
+.pday.sun .d span { color: var(--sun); }
+.pday-top .v { flex: 1; font-size: 14px; color: var(--faint); }
+.pday.on .pday-top .v { color: var(--ink); font-weight: 700; }
+.pday-top .x { flex: none; font-size: 12px; font-weight: 700; color: var(--sub); }
+.pday.on .pday-top .x { color: var(--accent); }
+.pday-edit { padding: 0 0 16px 76px; }
+.pday-edit input[type=time] { font-size: 17px; min-height: 44px; padding: 6px 8px; }
+.pday-edit .times .tilde { padding-bottom: 9px; }
+.pday-edit input[type=text] { min-height: 40px; font-size: 14px; padding: 8px 10px; margin-top: 8px; }
+.week-sep { padding: 18px 0 6px; font-size: 11px; font-weight: 700; color: var(--sub); border-bottom: 1px solid var(--line); }
+.psum { display: flex; justify-content: space-between; align-items: baseline; padding: 16px 0 0; font-size: 13px; color: var(--sub); }
+.psum b { font-size: 18px; color: var(--ink); font-weight: 800; margin-left: 4px; }
+.saved { border-left: 2px solid var(--accent); padding: 2px 0 2px 12px; margin: 0 0 4px; }
+.saved b { display: block; font-size: 15px; }
+.saved span { font-size: 12px; color: var(--sub); }
+</style>
+</head>
+<body>
+<header class="topbar"><div class="wrap">
+  <span class="lockup"><svg xmlns="http://www.w3.org/2000/svg" class="logo" role="img" aria-label="NEXTA" viewBox="-2 -2 1527 592"><g transform="translate(0.000000,588.000000) scale(0.100000,-0.100000)" fill="#142e38"><path d="M9660 5718 c-474 -434 -1271 -1213 -1594 -1558 -740 -788 -1101 -1258 -2169 -2825 -83 -121 -234 -341 -336 -490 -360 -526 -572 -838 -569 -840 8 -8 439 380 758 683 262 248 806 789 993 987 385 407 676 752 1034 1230 317 423 495 677 1485 2115 300 436 580 851 576 855 -1 1 -82 -69 -178 -157z M5900 4525 c0 -2 78 -122 174 -267 160 -243 421 -641 659 -1009 54 -83 101 -149 104 -146 2 3 107 146 233 319 189 259 226 316 218 331 -5 10 -122 189 -260 398 l-250 379 -439 0 c-242 0 -439 -2 -439 -5z M12895 4113 c-120 -275 -248 -562 -615 -1383 -43 -96 -167 -373 -275 -615 -158 -352 -281 -629 -352 -793 -4 -10 82 -12 428 -10 l434 3 136 323 c75 178 141 328 146 333 5 5 267 8 643 7 l634 -3 140 -333 140 -332 438 0 c300 0 438 3 438 11 0 5 -29 76 -64 157 -488 1124 -640 1476 -1031 2387 l-240 560 -430 3 -431 2 -139 -317z m710 -943 c138 -323 245 -584 245 -595 0 -3 -180 -5 -400 -5 -241 0 -400 4 -400 9 0 5 54 137 121 293 287 673 278 653 284 646 2 -2 70 -158 150 -348z M24 4406 c-19 -14 -19 -44 -23 -1549 l-3 -1534 32 -7 c18 -3 171 -6 341 -6 307 0 308 0 323 22 14 20 16 123 16 915 0 491 3 893 8 893 4 0 63 -78 132 -172 69 -95 157 -215 196 -268 39 -52 252 -345 474 -650 222 -305 434 -597 472 -647 l68 -93 359 0 359 0 6 23 c3 12 9 712 12 1555 l7 1532 -356 0 c-196 0 -358 -3 -360 -7 -3 -5 -8 -428 -12 -940 -4 -513 -10 -933 -14 -932 -3 0 -87 113 -186 251 -99 138 -255 355 -346 482 -323 450 -626 873 -725 1008 l-99 138 -331 0 c-269 0 -334 -3 -350 -14z M3280 2865 l0 -1555 1185 0 1185 0 0 300 0 300 -785 0 -785 0 0 325 0 325 680 0 680 0 -2 308 -3 307 -677 3 -678 2 0 325 0 325 795 0 795 0 0 295 0 295 -1195 0 -1195 0 0 -1555z M9170 4105 l0 -315 488 -2 487 -3 3 -1238 2 -1237 433 2 432 3 3 1235 3 1235 520 3 519 2 0 315 0 315 -1445 0 -1445 0 0 -315z M7990 2592 c-52 -70 -159 -214 -236 -320 l-142 -193 91 -142 c50 -78 153 -239 230 -357 77 -118 158 -245 181 -282 l41 -67 448 -1 447 0 -48 78 c-87 138 -422 661 -587 917 -295 457 -320 495 -325 495 -3 0 -48 -58 -100 -128z"/></g></svg><span class="tagline">CREATE &amp; ENTERTAINMENT</span></span>
+  <span class="top-title" id="ttl">配信予定</span>
+</div></header>
+<main id="app" class="wrap"><div class="loading">読み込み中…</div></main>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script>
+var DAY_JA = ['月', '火', '水', '木', '金', '土', '日'];
+
+function h(tag, attrs) {
+  var el = document.createElement(tag);
+  if (attrs) Object.keys(attrs).forEach(function (k) {
+    var v = attrs[k];
+    if (v === null || v === undefined || v === false) return;
+    if (k === 'class') el.className = v;
+    else if (k === 'text') el.textContent = v;
+    else if (k.slice(0, 2) === 'on') el.addEventListener(k.slice(2), v);
+    else if (k === 'style') el.setAttribute('style', v);
+    else if (k === 'value') el.value = v;
+    else if (k in el && typeof v !== 'string') el[k] = v;
+    else el.setAttribute(k, v === true ? '' : v);
+  });
+  for (var i = 2; i < arguments.length; i++) append(el, arguments[i]);
+  return el;
+}
+function append(el, c) {
+  if (c === null || c === undefined || c === false) return;
+  if (Array.isArray(c)) { c.forEach(function (x) { append(el, x); }); return; }
+  el.appendChild(typeof c === 'object' ? c : document.createTextNode(String(c)));
+}
+function call(name) {
+  var args = Array.prototype.slice.call(arguments, 1);
+  return new Promise(function (resolve, reject) {
+    var r = google.script.run.withSuccessHandler(resolve).withFailureHandler(reject);
+    r[name].apply(r, args);
+  });
+}
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+function hm(m) { var hh = Math.floor(m / 60); return (hh >= 24 ? '翌' : '') + pad2(hh % 24) + ':' + pad2(m % 60); }
+function hoursText(min) {
+  var hh = Math.floor(min / 60), mm = min % 60;
+  return mm ? hh + '時間' + mm + '分' : hh + '時間';
+}
+function md(ymd) { var p = ymd.split('-'); return Number(p[1]) + '/' + Number(p[2]); }
+function weekLabel(dates) { return md(dates[0]) + '(月)〜' + md(dates[6]) + '(日)'; }
+function addDays(ymd, n) {
+  var d = new Date(ymd + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+function errCode(err) { var m = String(err && err.message || err); var k = m.match(/[A-Z_]{4,}/); return k ? k[0] : m; }
+var toastTimer;
+function toast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.classList.remove('show'); }, 1800);
+}
+function copyText(text) {
+  function fallback() {
+    var ta = h('textarea', { style: 'position:fixed;top:0;left:0;opacity:0' });
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    var ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+    return ok;
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    return navigator.clipboard.writeText(text).then(function () { return true; }, function () { return fallback(); });
+  }
+  return Promise.resolve(fallback());
+}
+</script>
+<script>
+/* NEXTA_LIVER_SHIM: used only in the nexta.ltd liver page (scripts/build.mjs buildLiverWeb).
+   The token in ?t= picks the liver; every call goes to the web app's doPost. */
+(function () {
+  var API = 'https://script.google.com/macros/s/AKfycbx835WWozrpvkZATBBBGxvXm-8fqQ-BKohN5RqBzpkk5Cqo2lphiZkRn8D9qOGHcPB2IA/exec';
+  var params = {};
+  new URLSearchParams(location.search).forEach(function (v, k) { params[k] = v; });
+  window.google = { script: { url: { getLocation: function (cb) { cb({ parameter: params, hash: '' }); } } } };
+  window.call = function (fn) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    return fetch(API, { method: 'POST', headers: { 'content-type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ api: 'liver', fn: fn, args: args }) })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res && res.error) throw new Error(res.error);
+        return res.result;
+      });
+  };
+})();
+</script>
+
+<script>
+var S = { token: '', data: null, date: '', s: 1200, e: 1320, memo: '', sending: false, justAdded: '',
+  view: window.__VIEW || 'plan', plan: {}, open: '', dirty: false, saved: false };
+var app = document.getElementById('app');
+
+function dow(ymd) { return (new Date(ymd + 'T00:00:00Z').getUTCDay() + 6) % 7; }
+function dowClass(ymd) { var i = dow(ymd); return i === 5 ? 'sat' : i === 6 ? 'sun' : ''; }
+function toHHMM(m) { m = ((m % 1440) + 1440) % 1440; return pad2(Math.floor(m / 60)) + ':' + pad2(m % 60); }
+function fromHHMM(v) { var p = String(v || '').split(':'); return p.length < 2 ? NaN : Number(p[0]) * 60 + Number(p[1]); }
+function endAbs() { return S.e > S.s ? S.e : S.e + 1440; }   // an end at or before the start means after midnight
+
+function load() {
+  call('getLiverHome', S.token).then(function (data) {
+    if (data.error) return showError(data.error);
+    S.data = data;
+    S.date = data.nowMin < 6 * 60 ? addDays(data.today, -1) : data.today;
+    if (data.last) { S.s = data.last.s; S.e = data.last.e % 1440; }
+    setPlans(data.plans);
+    render();
+  }, function (err) { showError(errCode(err)); });
+}
+
+function showError(code) {
+  var msg = code === 'BAD_LINK'
+    ? 'このリンクは使えません。NEXTAの担当者に新しいリンクをもらってください。'
+    : '読み込みに失敗しました。少し時間をおいて、もう一度開いてください。';
+  app.replaceChildren(h('div', { style: 'padding:32px 0' }, h('div', { class: 'notice', text: msg })));
+}
+
+function dateChips() {
+  var out = [];
+  for (var i = 0; i < 7; i++) {
+    out.push((function (ymd, i) {
+      return h('button', { type: 'button', class: (S.date === ymd ? 'on ' : '') + dowClass(ymd), onclick: function () { S.date = ymd; render(); } },
+        h('span', { class: 'w', text: i === 0 ? '今日' : i === 1 ? '昨日' : DAY_JA[dow(ymd)] }),
+        h('span', { class: 'n', text: md(ymd) }));
+    })(addDays(S.data.today, -i), i));
+  }
+  return h('div', { class: 'dates' }, out);
+}
+
+function timeInput(id, value, onset) {
+  return h('input', { id: id, type: 'time', value: toHHMM(value), required: true,
+    onchange: function (e) { var m = fromHHMM(e.target.value); if (!isNaN(m)) { onset(m); render(); } } });
+}
+
+function render() {
+  document.getElementById('ttl').textContent = S.view === 'plan' ? '配信予定' : '配信記録';
+  var seg = h('div', { class: 'seg', role: 'tablist' }, [['plan', '配信予定'], ['record', '配信したあとの記録']].map(function (t) {
+    return h('button', { type: 'button', class: S.view === t[0] ? 'on' : '', text: t[1], onclick: function () {
+      if (S.view === t[0]) return;
+      if (S.dirty && !confirm('保存していない予定があります。保存せずに移りますか？')) return;
+      if (S.dirty) { setPlans(S.data.plans); }
+      S.view = t[0]; render(); window.scrollTo(0, 0);
+    } });
+  }));
+  app.replaceChildren(seg, S.view === 'plan' ? renderPlan() : renderRecord());
+}
+
+/* ---- plan (main screen) ---- */
+function setPlans(list) {
+  S.plan = {}; S.dirty = false;
+  (list || []).forEach(function (p) { S.plan[p.date] = { s: p.s, e: p.e % 1440, memo: p.memo || '' }; });
+}
+function planEnd(p) { return p.e > p.s ? p.e : p.e + 1440; }
+function planDates() {
+  var out = [], d = S.data.today;
+  while (d <= S.data.planTo) { out.push(d); d = addDays(d, 1); }
+  return out;
+}
+function defaultSlot() {
+  var keys = Object.keys(S.plan).sort();
+  var p = keys.length ? S.plan[keys[keys.length - 1]] : null;
+  return p ? { s: p.s, e: p.e, memo: '' } : { s: 21 * 60, e: 0, memo: '' };
+}
+function planTotal() {
+  return Object.keys(S.plan).reduce(function (a, k) { var p = S.plan[k]; return a + planEnd(p) - p.s; }, 0);
+}
+function renderPlan() {
+  var d = S.data;
+  var list = h('div', { class: 'plist' });
+  planDates().forEach(function (date, i) {
+    if (i > 0 && dow(date) === 0) list.appendChild(h('div', { class: 'week-sep', text: md(date) + '（月）からの週' }));
+    list.appendChild(planRow(date, i));
+  });
+  var days = Object.keys(S.plan).length;
+  return h('div', null,
+    h('section', { class: 'intro' },
+      h('div', { class: 'sub', text: d.name + 'さん、お疲れさまです！' }),
+      h('h1', { text: '2週間の配信予定' }),
+      h('p', { text: '配信できそうな日を押して、だいたいの時間を入れてください。決まっていない日は空けたままで大丈夫です。あとから何度でも変えられます。' })),
+    S.saved && !S.dirty ? h('div', { class: 'saved' }, h('b', { text: '予定を保存しました' }),
+      h('span', { text: '変わったら、このリンクからいつでも直せます。' })) : null,
+    list,
+    h('div', { class: 'psum' }, h('span', null, '予定', h('b', { text: days + '日' })),
+      h('span', null, '合計', h('b', { text: days ? hoursText(planTotal()) : '-' }))),
+    h('button', { type: 'button', class: 'btn primary send', disabled: S.sending || !S.dirty,
+      text: S.sending ? '保存中…' : S.dirty ? '予定を保存する' : (days ? '保存済み' : '日を選んでください'), onclick: savePlan }),
+    h('div', { class: 'foot' }));
+}
+function planRow(date, i) {
+  var p = S.plan[date];
+  var open = S.open === date && p;
+  var label = i === 0 ? '今日' : i === 1 ? '明日' : DAY_JA[dow(date)] + '曜';
+  var row = h('div', { class: 'pday ' + dowClass(date) + (p ? ' on' : '') },
+    h('button', { type: 'button', class: 'pday-top', 'aria-expanded': open ? 'true' : 'false', onclick: function () {
+      if (!p) { S.plan[date] = defaultSlot(); S.open = date; S.dirty = true; S.saved = false; }
+      else S.open = open ? '' : date;
+      render();
+    } },
+      h('span', { class: 'd' }, h('b', { text: md(date) }), h('span', { text: label })),
+      h('span', { class: 'v', text: p ? toHHMM(p.s) + '〜' + (p.e <= p.s ? '翌' : '') + toHHMM(p.e) + (p.memo ? '　' + p.memo : '') : '予定なし' }),
+      h('span', { class: 'x', text: p ? (open ? '閉じる' : '変更') : '＋ 入れる' })));
+  if (open) {
+    var ch = function () { S.dirty = true; S.saved = false; };
+    row.appendChild(h('div', { class: 'pday-edit' },
+      h('div', { class: 'times' },
+        h('div', { class: 't' }, h('label', { text: 'はじめ' }), timeInput('ps-' + date, p.s, function (m) { p.s = m; ch(); })),
+        h('span', { class: 'tilde', text: '〜' }),
+        h('div', { class: 't' }, h('label', null, 'おわり', p.e <= p.s ? h('span', { class: 'next', text: '翌日' }) : null),
+          timeInput('pe-' + date, p.e, function (m) { p.e = m; ch(); }))),
+      h('input', { type: 'text', maxlength: 100, placeholder: 'メモ（なくてOK）例：イベント', value: p.memo,
+        oninput: function (e) { p.memo = e.target.value; if (!S.dirty) { ch(); var b = app.querySelector('.send'); if (b) { b.disabled = false; b.textContent = '予定を保存する'; } } } }),
+      h('button', { type: 'button', class: 'btn small ghost', style: 'margin-top:6px;padding:0;color:var(--ng-ink)', text: 'この日は予定なしにする', onclick: function () {
+        delete S.plan[date]; S.open = ''; ch(); render();
+      } })));
+  }
+  return row;
+}
+function savePlan() {
+  if (S.sending || !S.dirty) return;
+  var days = Object.keys(S.plan).sort().map(function (k) { var p = S.plan[k]; return { date: k, s: p.s, e: planEnd(p), memo: p.memo }; });
+  if (days.some(function (x) { return x.e - x.s > 18 * 60; })) return toast('18時間を超える日があります');
+  S.sending = true; render();
+  call('savePlans', S.token, { days: days }).then(function (data) {
+    S.sending = false; S.data = data; setPlans(data.plans); S.saved = true; S.open = '';
+    render(); window.scrollTo(0, 0);
+  }, function (err) {
+    S.sending = false; render();
+    toast({ BAD_DATE: '日付を確認してください', BAD_TIME: '時間を確認してください', BAD_LINK: 'このリンクは使えません' }[errCode(err)] || '保存できませんでした。もう一度押してください');
+  });
+}
+
+/* ---- record (after streaming) ---- */
+function renderRecord() {
+  var d = S.data;
+  var form = h('div', { class: 'card' },
+    h('div', { class: 'field', style: 'margin-top:0' }, h('div', { class: 'label', text: '配信した日（始めた日）' }), dateChips()),
+    h('div', { class: 'field' },
+      h('div', { class: 'times' },
+        h('div', { class: 't' }, h('label', { for: 'ts', text: '始めた時間' }), timeInput('ts', S.s, function (m) { S.s = m; })),
+        h('span', { class: 'tilde', text: '〜' }),
+        h('div', { class: 't' }, h('label', { for: 'te' }, '終わった時間', S.e <= S.s ? h('span', { class: 'next', text: '翌日' }) : null),
+          timeInput('te', S.e, function (m) { S.e = m; }))),
+      h('div', { class: 'dur' }, '配信時間', h('b', { text: hoursText(endAbs() - S.s) }))),
+    h('div', { class: 'field' },
+      h('label', { for: 'memo', text: 'メモ（任意）' }),
+      h('textarea', { id: 'memo', maxlength: 300, style: 'min-height:64px', placeholder: '例：コラボ配信、イベント参加など', value: S.memo,
+        oninput: function (e) { S.memo = e.target.value; } })),
+    h('button', { type: 'button', class: 'btn primary send', disabled: S.sending, text: S.sending ? '送信中…' : '記録する', onclick: submit })
+  );
+  var out = h('div', null,
+    S.justAdded ? doneBox() : h('section', { class: 'hero' },
+      h('div', { class: 'sub', text: d.name + 'さん、お疲れさまです！' }),
+      h('h1', { text: '配信した時間を記録' }),
+      h('p', { class: 'sub', style: 'margin:6px 0 0', text: '配信が終わったら、始めた時間と終わった時間を入れてください。' })),
+    form,
+    recentList(),
+    h('div', { class: 'foot' })
+  );
+  if (S.justAdded) {
+    out.querySelector('.check').innerHTML = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#142e38" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  }
+  return out;
+}
+
+function doneBox() {
+  return h('section', { class: 'hero done' },
+    h('div', { class: 'check' }),
+    h('h1', { text: '記録しました！' }),
+    h('p', { class: 'sub', style: 'margin:4px 0 0', text: 'おつかれさまでした。もう1回配信したときは、下からまた記録できます。' }));
+}
+
+function recentList() {
+  var d = S.data;
+  var card = h('div', { class: 'card' });
+  if (!d.recent.length) card.appendChild(h('div', { class: 'sub', style: 'padding:8px 0', text: 'まだ記録はありません。' }));
+  d.recent.forEach(function (r) {
+    card.appendChild(h('div', { class: 'rec' + (r.id === S.justAdded ? ' new' : '') },
+      h('span', { class: 'd ' + dowClass(r.date), text: md(r.date) + ' ' + DAY_JA[dow(r.date)] }),
+      h('span', { class: 't' }, hm(r.s) + '〜' + hm(r.e), h('small', { text: hoursText(r.e - r.s) + (r.memo ? '・' + r.memo : '') })),
+      r.date >= d.editFrom && r.source === 'form' ? h('button', { type: 'button', class: 'del', text: '消す', onclick: function () { remove(r); } }) : null));
+  });
+  return [h('h2', { style: 'font-size:15px;margin:22px 0 10px', text: '最近の記録（2週間）' }), card];
+}
+
+function submit() {
+  if (S.sending) return;
+  if (endAbs() - S.s > 18 * 60) return toast('配信時間が長すぎます。時間を確認してください');
+  S.sending = true; render();
+  call('addStream', S.token, { date: S.date, s: S.s, e: endAbs(), memo: S.memo }).then(function (data) {
+    S.sending = false; S.memo = ''; S.justAdded = data.addedId;
+    S.data = data; render(); window.scrollTo(0, 0);
+  }, function (err) {
+    S.sending = false; render();
+    toast({
+      OVERLAP: 'その時間はもう記録されています',
+      BAD_DATE: 'この日はもう記録できません',
+      BAD_TIME: '時間を確認してください',
+      BAD_LINK: 'このリンクは使えません'
+    }[errCode(err)] || '送信できませんでした。もう一度押してください');
+  });
+}
+
+function remove(r) {
+  if (!confirm(md(r.date) + ' ' + hm(r.s) + '〜' + hm(r.e) + ' の記録を消しますか？')) return;
+  call('deleteStream', S.token, r.id).then(function (data) {
+    if (S.justAdded === r.id) S.justAdded = '';
+    S.data = data; render(); toast('消しました');
+  }, function () { toast('消せませんでした'); });
+}
+
+google.script.url.getLocation(function (loc) {
+  S.token = (loc.parameter || {}).t || '';
+  if (!S.token) return showError('BAD_LINK');
+  load();
+});
+</script>
+</body>
+</html>
