@@ -128,7 +128,7 @@ input[type=time] { border: 1px solid var(--line); border-radius: 0; background: 
 .seg button.on { background: var(--ink); color: #fff; }
 .intro { padding: 22px 0 18px; }
 .intro h1 { font-size: 22px; margin-top: 2px; }
-.intro p { margin: 8px 0 0; color: var(--sub); font-size: 13px; }
+.intro p { margin: 10px 0 0; color: var(--sub); font-size: 13px; line-height: 1.75; white-space: pre-line; }
 .plist { border-top: 1px solid var(--ink); }
 .pday { border-bottom: 1px solid var(--line); }
 .pday-top { display: flex; align-items: center; gap: 12px; width: 100%; border: none; background: none; padding: 13px 0; text-align: left; min-height: 56px; }
@@ -333,8 +333,8 @@ function renderPlan() {
   return h('div', null,
     h('section', { class: 'intro' },
       h('div', { class: 'sub', text: d.name + 'さん、お疲れさまです！' }),
-      h('h1', { text: '2週間の配信予定' }),
-      h('p', { text: '配信できそうな日を押して、だいたいの時間を入れてください。決まっていない日は空けたままで大丈夫です。あとから何度でも変えられます。' })),
+      h('h1', { text: '1週間の配信予定' }),
+      h('p', { text: '配信できそうな日を押して、\nだいたいの時間を入れてください。\n決まっていない日は、空けたままで大丈夫です。\nあとから何度でも変えられます。' })),
     S.saved && !S.dirty ? h('div', { class: 'saved' }, h('b', { text: '予定を保存しました' }),
       h('span', { text: '変わったら、このリンクからいつでも直せます。' })) : null,
     list,
